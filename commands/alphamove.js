@@ -17,9 +17,9 @@ async function execute(interaction) {
 }
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('alphamove')
-		.setDescription('You probably cannot run this command.')
+    data: new SlashCommandBuilder()
+        .setName('alphamove')
+        .setDescription('You probably cannot run this command.')
         .addMentionableOption(option => option.setName('sigma').setDescription('The poor dude')),
-	execute,
+    execute,
 };
