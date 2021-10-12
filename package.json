@@ -18,10 +18,12 @@
   "homepage": "https://github.com/TheIceCreamBear/ThonkBot#readme",
   "dependencies": {
     "@discordjs/builders": "^0.6.0",
+    "@discordjs/opus": "^0.5.3",
     "@discordjs/rest": "^0.1.0-canary.0",
     "@discordjs/voice": "^0.6.0",
     "discord-api-types": "^0.23.1",
     "discord.js": "^13.2.0",
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "tweetnacl": "^1.0.3"
   }
 }

@@ -1,12 +1,27 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { state } = require('../bot');
 const fs = require('fs');
-const audioFiles = fs.readdirSync(__dirname).filter(file => file.endsWith('.wav'));
+const path = require('path');
+const {
+	AudioPlayerStatus,
+	entersState,
+	joinVoiceChannel,
+	VoiceConnectionStatus,
+    createAudioPlayer,
+    createAudioResource,
+    StreamType,
+    VoiceConnectionDisconnectReason,
+} = require('@discordjs/voice');
+
+// const audioFiles = fs.readdirSync(path.join(__dirname, 'audio')).filter(file => file.endsWith('.ogg')); // TODO fix this
+const { baseurl, files, params } = require('../audio/audio.json');
 const wait = require('util').promisify(setTimeout);
 
 let annoyState = {};
 
-function annoy() {
+async function annoy() {
+    annoyState.handle = undefined;
+
     let largest;
     let largestSize = 0;
     for (const snowflake in state.voiceChannels) {
@@ -16,9 +31,86 @@ function annoy() {
         }
     }
 
-    let channel = state.voiceChannels[largest];
+    let channel = state.voiceChannels[largest].chan;
 
     // TODO join that channel and run the audio
+    joinChannelOrNothing(channel);
+
+    try {
+        await entersState(annoyState.connection, VoiceConnectionStatus.Ready, 20e3);
+    } catch (e) {
+        console.warn(e);
+        annoyState.notifChannel.send(`Failed to join the voice channel ${channel.id} in 20s. <@${annoyState.notifUser.id}>`).catch(console.warn);
+        return;
+    }
+
+    console.log('Should be in the voice channel here');
+
+    const file = files[getRandomInt(files.length, 0)];
+
+    const resource = createAudioResource(baseurl + file + params, {
+        inputType: StreamType.Arbitrary
+    });
+
+    annoyState.audioPlayer.play(resource);
+}
+
+function joinChannelOrNothing(channel) {
+    if (annoyState.channel === channel) {
+        console.log(`Already conencted to ${channel.name}`);
+        return;
+    }
+
+    annoyState.channel = channel;
+
+    annoyState.connection = joinVoiceChannel({
+        channelId: channel.id,
+        guildId: annoyState.guild.id,
+        adapterCreator: annoyState.guild.voiceAdapterCreator,
+        selfDeaf: false,
+        selfMute: false
+    });
+    annoyState.connection.on('error', console.warn);
+    annoyState.connection.on('error', () => {annoyState.connection = undefined; annoyState.channel = undefined});
+    // borrowed from https://github.com/discordjs/voice/blob/main/examples/music-bot/src/music/subscription.ts#L32
+    annoyState.connection.on('stateChange', async (_, newState) => {
+        if (newState.status === VoiceConnectionStatus.Disconnected) {
+            if (newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014) {
+                try {
+                    await entersState(annoyState.connection, VoiceConnectionStatus.Connecting, 5_000);
+                } catch {
+                    annoyState.connection.destroy();
+                }
+            } else if (annoyState.connection.rejoinAttempts < 5) {
+                await wait((annoyState.connection.rejoinAttempts + 1) * 5_000);
+                annoyState.connection.rejoin();
+            } else {
+                annoyState.connection.destroy();
+            }
+        } else if (newState.status === VoiceConnectionStatus.Destroyed) {
+        } else if (newState.status === VoiceConnectionStatus.Connecting || newState.status === VoiceConnectionStatus.Signalling) {
+            try {
+                await entersState(annoyState.connection, VoiceConnectionStatus.Ready, 20_000);
+            } catch {
+                if (annoyState.connection.state.status !== VoiceConnectionStatus.Destroyed) annoyState.connection.destroy();
+            }
+        }
+    });
+    
+    annoyState.audioPlayer = createAudioPlayer();
+    annoyState.audioPlayer.on('stateChange', (oldState, newState) => {
+        if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle) {
+            // just finished playing something, do some sort of interesting logic here about queing the next annoy call
+            queueNextAnnoyTast();
+            return;
+        }
+        if (newState.status === AudioPlayerStatus.Playing) {
+            // TODO possible use of metadata to do on start and on stop logic?
+        }
+    });
+    annoyState.audioPlayer.on('error', console.warn);
+
+    annoyState.connection.subscribe(annoyState.audioPlayer);
 }
 
 async function execute(interaction) {
@@ -38,9 +130,16 @@ async function execute(interaction) {
             return;
         }
         
-        clearTimeout(annoystate.handle);
+        clearTimeout(annoyState.handle);
 
         annoyState = {};
+
+        interaction.reply('Stopping annoy job.');
+        return;
+    }
+
+    if (annoyState.handle) {
+        interaction.reply('There is already an annoy process running bozo.');
         return;
     }
 
@@ -49,16 +148,23 @@ async function execute(interaction) {
         return;
     }
 
-    await interaction.reply(`Annoyance timeout set to be some time between 150s and ${maxTime}`);
+    await interaction.reply(`Annoyance timeout set to be some time between 150s and ${maxTime}s`);
 
     annoyState.max = maxTime;
 
-    let timeTillNext = getRandomInt(maxTime + 1, 150) * 1000;
+    annoyState.guild = interaction.guild;
+
+    annoyState.notifChannel = interaction.channel;
+    annoyState.notifUser = interaction.member;
+
+    queueNextAnnoyTast();
+}
+
+function queueNextAnnoyTast() {
+    let timeTillNext = getRandomInt(annoyState.max + 1, 150) * 1000;
     console.log(timeTillNext);
 
     annoyState.handle = setTimeout(annoy, timeTillNext);
-
-    annoyState.guild = interaction.guild;
 }
 
 function getRandomInt(max, min) {

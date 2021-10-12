@@ -1,0 +1,25 @@
+{
+    "baseurl": "https://github.com/TheIceCreamBear/AudioStore/blob/main/",
+    "files": [
+        "amongy.ogg",
+        "baba.ogg",
+        "bonk.ogg",
+        "bruh.ogg",
+        "dog.ogg",
+        "drip.ogg",
+        "dundun.ogg",
+        "e.ogg",
+        "fanVsEnjoyer.ogg",
+        "fart.ogg",
+        "heresABell.ogg",
+        "kickball.ogg",
+        "nope.ogg",
+        "ps.ogg",
+        "regular.ogg",
+        "tacoBell.ogg",
+        "vine.ogg",
+        "waterphone.ogg",
+        "Wilhelm.ogg"
+    ],
+    "params": "?raw=true"
+}
