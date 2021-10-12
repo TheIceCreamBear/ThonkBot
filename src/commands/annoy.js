@@ -187,6 +187,13 @@ async function execute(interaction) {
         return;
     }
 
+    const maxAnnoy = interaction.options.getInteger('maxannoyances');
+    if (maxAnnoy && maxAnnoy >= 1) {
+        annoyState.maxAnnoy = maxAnnoy;
+    } else {
+        annoyState.maxAnnoy = -1;
+    }
+
     if (annoyState.isIdle) {
         annoyState.isIdle = false;
         clearTimeout(annoyState.handle);
@@ -205,6 +212,15 @@ async function execute(interaction) {
 }
 
 function queueNextAnnoyTast(miliTilNext) {
+    if (annoyState.maxAnnoy == 0) {
+        console.log('No more annoy states left, stopping.');
+        return;
+    }
+
+    if (annoyState.maxAnnoy > 0) {
+        annoyState.maxAnnoy--;
+    }
+
     let timeTillNext = getRandomInt(annoyState.max + 1, 150) * 1000;
     console.log(timeTillNext);
 
@@ -225,6 +241,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('annoy')
         .setDescription('You probably cannot run this command.')
-        .addIntegerOption(option => option.setName('maxtime').setDescription('The max time between triggers in s. Min time is 150 seconds. Use with 0 to disable.')),
+        .addIntegerOption(option => option.setName('maxtime').setDescription('The max time between triggers in s. Min time is 150 seconds. Use with 0 to disable.'))
+        .addIntegerOption(option => option.setName('maxannoyances').setDescription('The max number of annoyances until the command needs to be called again.')),
     execute,
 };
