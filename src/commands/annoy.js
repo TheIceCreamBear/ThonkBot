@@ -17,7 +17,37 @@ const {
 const { baseurl, files, params } = require('../audio/audio.json');
 const wait = require('util').promisify(setTimeout);
 
-let annoyState = {};
+let annoyState = {idle: idle};
+state.annoyState = annoyState;
+
+function idle() {
+    console.log('Starting idle.');
+
+    annoyState.isIdle = true;
+    annoyState.handle = undefined;
+    annoyState.channel = undefined;
+    annoyState.audioPlayer?.stop();
+    annoyState.audioPlayer = undefined;
+    annoyState.connection?.destroy();
+    annoyState.connection = undefined;
+
+    let largest;
+    let largestSize = 0;
+    for (const snowflake in state.voiceChannels) {
+        if (state.voiceChannels[snowflake].size > largestSize) {
+            largest = snowflake;
+            largestSize = state.voiceChannels[snowflake].size;
+        }
+    }
+
+    if (largestSize != 0) {
+        queueNextAnnoyTast(1000);
+        annoyState.isIdle = false;
+        return;
+    }
+
+    annoyState.handle = setTimeout(idle, 600_000);
+}
 
 async function annoy() {
     annoyState.handle = undefined;
@@ -30,6 +60,13 @@ async function annoy() {
             largestSize = state.voiceChannels[snowflake].size;
         }
     }
+
+    if (largestSize == 0) {
+        idle();
+        return;
+    }
+
+    annoyState.isIdle = false;
 
     let channel = state.voiceChannels[largest].chan;
 
@@ -44,7 +81,7 @@ async function annoy() {
         return;
     }
 
-    console.log('Should be in the voice channel here');
+    // console.log('Should be in the voice channel here');
 
     const file = files[getRandomInt(files.length, 0)];
 
@@ -126,13 +163,15 @@ async function execute(interaction) {
     if (maxTime == 0) {
         if (!annoyState.handle) {
             interaction.reply('No annoy job running to cancel.');
-            annoyState = {};
+            annoyState = {idle: idle};
+            state.annoyState = annoyState;
             return;
         }
         
         clearTimeout(annoyState.handle);
 
-        annoyState = {};
+        annoyState = {idle: idle};
+        state.annoyState = annoyState;
 
         interaction.reply('Stopping annoy job.');
         return;
@@ -148,6 +187,11 @@ async function execute(interaction) {
         return;
     }
 
+    if (annoyState.isIdle) {
+        annoyState.isIdle = false;
+        clearTimeout(annoyState.handle);
+    }
+
     await interaction.reply(`Annoyance timeout set to be some time between 150s and ${maxTime}s`);
 
     annoyState.max = maxTime;
@@ -157,12 +201,16 @@ async function execute(interaction) {
     annoyState.notifChannel = interaction.channel;
     annoyState.notifUser = interaction.member;
 
-    queueNextAnnoyTast();
+    queueNextAnnoyTast(100);
 }
 
-function queueNextAnnoyTast() {
+function queueNextAnnoyTast(miliTilNext) {
     let timeTillNext = getRandomInt(annoyState.max + 1, 150) * 1000;
     console.log(timeTillNext);
+
+    if (miliTilNext) {
+        timeTillNext = miliTilNext;
+    }
 
     annoyState.handle = setTimeout(annoy, timeTillNext);
 }

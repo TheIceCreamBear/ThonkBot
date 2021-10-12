@@ -3,7 +3,7 @@ const { state } = require('../bot');
 state.voiceChannels = {};
 
 state.client.on('voiceStateUpdate', async (oldState, newState) => {
-    console.log(JSON.stringify(oldState), JSON.stringify(newState));
+    // console.log(JSON.stringify(oldState), JSON.stringify(newState));
     if (oldState.guild.id != newState.guild.id) {
         console.log('Old state guild doesnt match new state guild');
         return;
@@ -18,17 +18,28 @@ state.client.on('voiceStateUpdate', async (oldState, newState) => {
     }
     if (oldState.channelId) {
         console.log('Voice channel leave for user %s in channel %s', oldState.id, oldState.channelId);
-        if (!state.voiceChannels[oldState.channelId].members) {
-            state.voiceChannels[oldState.channelId].members = 0;
+        if (!state.voiceChannels[oldState.channelId].size) {
+            state.voiceChannels[oldState.channelId].size = 0;
         }
-        state.voiceChannels[oldState.channelId].members -= 1;
+        state.voiceChannels[oldState.channelId].size -= 1;
+
+        if (state.voiceChannels[oldState.channelId].size == 1 && state.annoyState.channel.id == oldState.channelId) {
+            console.log('Disconnecting and idleing, we are the only ones left in the channel');
+            state.annoyState.idle();
+        }
     }
     if (newState.channelId) {
         console.log('Voice channel join for user %s in channel %s', newState.id, newState.channelId);
-        if (!state.voiceChannels[newState.channelId].members) {
-            state.voiceChannels[newState.channelId].members = 0;
+        if (!state.voiceChannels[newState.channelId].size) {
+            state.voiceChannels[newState.channelId].size = 0;
         }
-        state.voiceChannels[newState.channelId].members += 1;
+        state.voiceChannels[newState.channelId].size += 1;
+
+        if (state.annoyState.isIdle) {
+            clearTimeout(state.annoyState.handle);
+            // funny enough, this idle call will actually not idle us, it should pick up that we should stop idlining
+            state.annoyState.idle();
+        }
     }
 });
 
