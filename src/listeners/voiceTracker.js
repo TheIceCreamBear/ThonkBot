@@ -24,7 +24,7 @@ state.client.on('voiceStateUpdate', async (oldState, newState) => {
         state.voiceChannels[oldState.channelId].members -= 1;
     }
     if (newState.channelId) {
-        console.log('Voice channel leave for user %s in channel %s', newState.id, newState.channelId);
+        console.log('Voice channel join for user %s in channel %s', newState.id, newState.channelId);
         if (!state.voiceChannels[newState.channelId].members) {
             state.voiceChannels[newState.channelId].members = 0;
         }

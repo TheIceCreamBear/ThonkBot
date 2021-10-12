@@ -9,10 +9,10 @@ let annoyState = {};
 function annoy() {
     let largest;
     let largestSize = 0;
-    for (const [snowflake, chanProp] of state.voiceChannels.entries()) {
-        if (chanProp.size > largestSize) {
+    for (const snowflake in state.voiceChannels) {
+        if (state.voiceChannels[snowflake].size > largestSize) {
             largest = snowflake;
-            largestSize = chanProp.size;
+            largestSize = state.voiceChannels[snowflake].size;
         }
     }
 
@@ -44,7 +44,7 @@ async function execute(interaction) {
         return;
     }
 
-    if (maxTime <= 600) {
+    if (maxTime < 600) {
         interaction.reply(`The max timeout ${maxTime} is too low (and too annoying).`);
         return;
     }
@@ -67,7 +67,7 @@ function getRandomInt(max, min) {
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('alphamove')
+        .setName('annoy')
         .setDescription('You probably cannot run this command.')
         .addIntegerOption(option => option.setName('maxtime').setDescription('The max time between triggers in s. Min time is 150 seconds. Use with 0 to disable.')),
     execute,
