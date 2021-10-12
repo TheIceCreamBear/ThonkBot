@@ -214,6 +214,11 @@ async function execute(interaction) {
 function queueNextAnnoyTast(miliTilNext) {
     if (annoyState.maxAnnoy == 0) {
         console.log('No more annoy states left, stopping.');
+        annoyState.channel = undefined;
+        annoyState.audioPlayer?.stop();
+        annoyState.audioPlayer = undefined;
+        annoyState.connection?.destroy();
+        annoyState.connection = undefined;
         return;
     }
 
