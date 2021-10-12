@@ -66,6 +66,8 @@ async function annoy() {
         return;
     }
 
+    console.log('Annoy time');
+
     annoyState.isIdle = false;
 
     let channel = state.voiceChannels[largest].chan;
@@ -80,8 +82,6 @@ async function annoy() {
         annoyState.notifChannel.send(`Failed to join the voice channel ${channel.id} in 20s. <@${annoyState.notifUser.id}>`).catch(console.warn);
         return;
     }
-
-    // console.log('Should be in the voice channel here');
 
     const file = files[getRandomInt(files.length, 0)];
 
@@ -211,6 +211,8 @@ function queueNextAnnoyTast(miliTilNext) {
     if (miliTilNext) {
         timeTillNext = miliTilNext;
     }
+
+    console.log(`Queued annoy task to occur in ${timeTillNext} ms`);
 
     annoyState.handle = setTimeout(annoy, timeTillNext);
 }
