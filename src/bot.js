@@ -17,7 +17,6 @@ async function init() {
     // init listeners
     require('./listeners/loader');
 
-    
     await state.client.login();
 }
 

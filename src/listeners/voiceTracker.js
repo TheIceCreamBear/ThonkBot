@@ -34,27 +34,38 @@ state.client.on('voiceStateUpdate', async (oldState, newState) => {
 
 // TODO fix the below bugs: channel size is always zero, guild members.fetch causes error
 state.client.once('ready', async () => {
-    let guild = await state.client.guilds.fetch(state.focusedGuild);
-    if (!guild) {
-        console.log('Could not get guild %s to init voice tracking. Errors will occur', state.focusedGuild);
+    let guild;
+    try {
+        guild = await state.client.guilds.fetch(state.focusedGuild);
+    } catch (e) {
+        console.log('Some error happened with fetching the guild');
+        console.log(e);
         return;
     }
-    // let members = await guild.members.fetch({ cache: false });
-    let channels = await guild.channels.fetch();
-    if (!channels) {
-        console.log('Something weird happened while getting the channels.');
+    // https://discord.com/channels/81384788765712384/381889950666457088/896320105854672916
+    guild.shardId = 0;
+    // the above is a hack and should not be used if sharding
+    try {
+        let members = await guild.members.fetch({ cache: false });
+    } catch (e) {
+        console.log('Some error happened with fetching the guild members');
+        console.log(e);
+    }
+    let channels;
+    try {
+        channels = await guild.channels.fetch()
+    } catch (e) {
+        console.log('Some error happened with fetching the guild channels');
+        console.log(e);
         return;
     }
-    console.log(JSON.stringify(channels));
 
     for (const [snowflake, channel] of channels) {
         if (!channel.isVoice()) {
             continue;
         }
-        // console.log(JSON.stringify(channel), JSON.stringify(channel.members));
         state.voiceChannels[snowflake] = {};
         state.voiceChannels[snowflake].chan = channel;
         state.voiceChannels[snowflake].size = channel.members.size;
-        console.log(JSON.stringify(state.voiceChannels));
     }
 });

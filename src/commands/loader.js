@@ -17,14 +17,27 @@ for (const file of commandFiles) {
 
 const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
 
-
+// TODO delete duplicate commands from server
 (async () => {
     try {
         console.log('Starting refersh of application (/) commands.');
 
-        await rest.put(Routes.applicationCommands(process.env.DISCORD_CLEINT_ID), { body: commands })
+        console.log('Deleting old commands.');
+        rest.get(Routes.applicationCommands(process.env.DISCORD_CLEINT_ID)).then(data => {
+            const promises = [];
+            for (const command of data) {
+                const deleteUrl = `${Routes.applicationCommands(process.env.DISCORD_CLEINT_ID)}/${command.id}`;
+                promises.push(rest.delete(deleteUrl));
+            }
+            return Promise.all(promises);
+        });
+        console.log('Old commands deleted.');
 
-        console.log('Cussessfully reloaded application (/) commands.');
+        console.log('Setting up new commands.');
+        await rest.put(Routes.applicationCommands(process.env.DISCORD_CLEINT_ID), { body: commands });
+        console.log('New commands set up.');
+
+        console.log('Successfully reloaded application (/) commands.');
     } catch (e) {
         console.log(e);
     }
