@@ -149,9 +149,11 @@ function joinChannelOrNothing(channel) {
 }
 
 async function execute(interaction) {
+    let allowed = true;
     if (!state.alphaUsers.includes(interaction.member.id)) {
-        interaction.reply('You may not run that command bruv.');
-        return;
+        // interaction.reply('You may not run that command bruv.');
+        // return;
+        allowed = false;
     }
     console.log(interaction.member.roles.cache);
     let hasAlphaRole = false;
@@ -164,6 +166,11 @@ async function execute(interaction) {
         }
     }
     if (!hasAlphaRole) {
+        // interaction.reply('You may not run that command bruv.');
+        // return;
+        allowed = false;
+    }
+    if (!allowed) {
         interaction.reply('You may not run that command bruv.');
         return;
     }
