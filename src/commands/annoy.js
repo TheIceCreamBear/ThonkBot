@@ -16,6 +16,9 @@ const {
 const { baseurl, files, params } = require('../audio/audio.json');
 const wait = require('util').promisify(setTimeout);
 
+const minTime = parseInt(process.env.MIN_TIME || '150');
+const minAllowedMax = parseInt(process.env.MIN_ALLOWED_MAX || '300');
+
 let annoyState = {idle: idle};
 state.annoyState = annoyState;
 
@@ -195,8 +198,8 @@ async function execute(interaction) {
         return;
     }
 
-    if (maxTime < 600) {
-        interaction.reply(`The max timeout ${maxTime} is too low (and too annoying).`);
+    if (maxTime < minAllowedMax) {
+        interaction.reply(`The max timeout ${maxTime} is too low (and too annoying).\nMax timeout must be greater or equal to ${minAllowedMax}.`);
         return;
     }
 
@@ -212,7 +215,7 @@ async function execute(interaction) {
         clearTimeout(annoyState.handle);
     }
 
-    await interaction.reply(`Annoyance timeout set to be some time between 150s and ${maxTime}s`);
+    await interaction.reply(`Annoyance timeout set to be some time between ${minTime}s and ${maxTime}s`);
 
     annoyState.max = maxTime;
 
@@ -239,7 +242,7 @@ function queueNextAnnoyTast(miliTilNext) {
         annoyState.maxAnnoy--;
     }
 
-    let timeTillNext = getRandomInt(annoyState.max + 1, 150) * 1000;
+    let timeTillNext = getRandomInt(annoyState.max + 1, minTime) * 1000;
     console.log(timeTillNext);
 
     if (miliTilNext) {
@@ -259,7 +262,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('annoy')
         .setDescription('You probably cannot run this command.')
-        .addIntegerOption(option => option.setName('maxtime').setDescription('The max time between triggers in s. Min time is 150 seconds. Use with 0 to disable.'))
+        .addIntegerOption(option => option.setName('maxtime').setDescription(`The max time between triggers in s. Min time is ${minTime} seconds. Use with 0 to disable.`))
         .addIntegerOption(option => option.setName('maxannoyances').setDescription('The max number of annoyances until the command needs to be called again.')),
     execute,
 };
