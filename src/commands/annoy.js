@@ -88,7 +88,7 @@ async function annoy() {
         inputType: StreamType.Arbitrary
     });
 
-    console.log(`Annoy time: ${file}`);
+    console.log(`Annoy time: ${file}.\tAnnoys left: ${annoyState.maxAnnoy}`);
 
     annoyState.audioPlayer.play(resource);
 }
