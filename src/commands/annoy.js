@@ -13,7 +13,6 @@ const {
     VoiceConnectionDisconnectReason,
 } = require('@discordjs/voice');
 
-// const audioFiles = fs.readdirSync(path.join(__dirname, 'audio')).filter(file => file.endsWith('.ogg')); // TODO fix this
 const { baseurl, files, params } = require('../audio/audio.json');
 const wait = require('util').promisify(setTimeout);
 
@@ -72,7 +71,6 @@ async function annoy() {
 
     let channel = state.voiceChannels[largest].chan;
 
-    // TODO join that channel and run the audio
     joinChannelOrNothing(channel);
 
     try {

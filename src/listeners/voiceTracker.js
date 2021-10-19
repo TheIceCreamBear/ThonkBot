@@ -43,7 +43,6 @@ state.client.on('voiceStateUpdate', async (oldState, newState) => {
     }
 });
 
-// TODO fix the below bugs: channel size is always zero, guild members.fetch causes error
 state.client.once('ready', async () => {
     let guild;
     try {

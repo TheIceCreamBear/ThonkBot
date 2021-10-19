@@ -9,7 +9,7 @@ async function run() {
         try {
             console.log('Initializing bot');
             await init();
-            // TODO more stuff here and also have a time out here so it doesnt instantly try to init again
+            // TODO more stuff here
             console.log('Initialization completed');
             
             while (true) {

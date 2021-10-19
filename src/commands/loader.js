@@ -17,7 +17,6 @@ for (const file of commandFiles) {
 
 const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
 
-// TODO delete duplicate commands from server
 (async () => {
     try {
         console.log('Starting refersh of application (/) commands.');
