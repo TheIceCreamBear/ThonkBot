@@ -147,11 +147,15 @@ function joinChannelOrNothing(channel) {
         }
     });
     annoyState.audioPlayer.on('error', console.warn);
-
+    
     annoyState.connection.subscribe(annoyState.audioPlayer);
 }
 
 async function execute(interaction) {
+    if (interaction.guild.id != process.env.DISCORD_GUILD_ID) {
+        interaction.reply('Invalid guild for this command.');
+        return;
+    }
     let allowed = false;
     if (state.alphaUsers.includes(interaction.member.id)) {
         allowed = true;
@@ -169,10 +173,6 @@ async function execute(interaction) {
     }
     if (!allowed) {
         interaction.reply('You may not run that command bruv.');
-        return;
-    }
-    if (interaction.guild.id != process.env.DISCORD_GUILD_ID) {
-        interaction.reply('Invalid guild for this command.');
         return;
     }
     const maxTime = interaction.options.getInteger('maxtime');
