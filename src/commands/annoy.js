@@ -149,7 +149,19 @@ function joinChannelOrNothing(channel) {
 }
 
 async function execute(interaction) {
-    if (interaction.member.id != process.env.DISCORD_ALPHA_USER) {
+    if (!state.alphaUsers.includes(interaction.member.id)) {
+        interaction.reply('You may not run that command bruv.');
+        return;
+    }
+    let hasAlphaRole = false;
+    for (let i in state.alphaRoles) {
+        let role = state.alphaRoles[i];
+        if (interaction.member.roles.resolveId(role) == role) {
+            hasAlphaRole = true;
+            break;
+        }
+    }
+    if (!hasAlphaRole) {
         interaction.reply('You may not run that command bruv.');
         return;
     }
