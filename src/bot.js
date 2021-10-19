@@ -9,6 +9,7 @@ async function init() {
     // setup alpha users and alpha roles
     state.alphaUsers = getAlphaUserArray();
     state.alphaRoles = getAlphaRoleArray();
+    console.log(state.alphaRoles, state.alphaUsers);
     
     state.client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS]});
     
@@ -36,9 +37,9 @@ function getAlphaUserArray() {
 }
 
 function getAlphaRoleArray() {
-    let userString = process.env.DISCORD_ALPHA_ROLE || '';
+    let roleString = process.env.DISCORD_ALPHA_ROLE || '';
     let roles = [];
-    let splits = userString.split(',');
+    let splits = roleString.split(',');
     for (let i in splits) {
         let split = splits[i];
         roles.push(split);
