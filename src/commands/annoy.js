@@ -156,7 +156,7 @@ async function execute(interaction) {
     let hasAlphaRole = false;
     for (let i in state.alphaRoles) {
         let role = state.alphaRoles[i];
-        if (interaction.member.roles.resolveId(role) == role) {
+        if (interaction.member.roles.cache.get(role)) {
             hasAlphaRole = true;
             break;
         }
