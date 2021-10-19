@@ -153,9 +153,11 @@ async function execute(interaction) {
         interaction.reply('You may not run that command bruv.');
         return;
     }
+    console.log(interaction.member.roles.cache);
     let hasAlphaRole = false;
     for (let i in state.alphaRoles) {
         let role = state.alphaRoles[i];
+        console.log(i, role);
         if (interaction.member.roles.cache.get(role)) {
             hasAlphaRole = true;
             break;
