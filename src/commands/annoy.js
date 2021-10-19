@@ -68,8 +68,6 @@ async function annoy() {
         return;
     }
 
-    console.log('Annoy time');
-
     annoyState.isIdle = false;
 
     let channel = state.voiceChannels[largest].chan;
@@ -89,6 +87,8 @@ async function annoy() {
     const resource = createAudioResource(baseurl + file + params, {
         inputType: StreamType.Arbitrary
     });
+
+    console.log(`Annoy time: ${file}`);
 
     annoyState.audioPlayer.play(resource);
 }
@@ -243,13 +243,12 @@ function queueNextAnnoyTast(miliTilNext) {
     }
 
     let timeTillNext = getRandomInt(annoyState.max + 1, minTime) * 1000;
-    console.log(timeTillNext);
 
     if (miliTilNext) {
         timeTillNext = miliTilNext;
     }
 
-    console.log(`Queued annoy task to occur in ${timeTillNext} ms`);
+    console.log(`Queued annoy task to occur in ${timeTillNext}ms (${timeTillNext / 1000}s)`);
 
     annoyState.handle = setTimeout(annoy, timeTillNext);
 }
