@@ -1,6 +1,8 @@
 const { Client, Intents } = require('discord.js');
+const { loadState, saveState } = require('./stateful/dbhandler');
 
 let state = {};
+// let state = loadState();
 
 async function init() {
     state.clientID = process.env.DISCORD_CLIENT_ID;
@@ -9,7 +11,6 @@ async function init() {
     // setup alpha users and alpha roles
     state.alphaUsers = getAlphaUserArray();
     state.alphaRoles = getAlphaRoleArray();
-    console.log(state.alphaRoles, state.alphaUsers);
     
     state.client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS]});
     
@@ -23,6 +24,10 @@ async function init() {
     require('./listeners/loader');
 
     await state.client.login();
+}
+
+async function save() {
+    saveState();
 }
 
 function getAlphaUserArray() {
@@ -49,3 +54,4 @@ function getAlphaRoleArray() {
 
 module.exports.state = state;
 module.exports.init = init;
+module.exports.save = save;

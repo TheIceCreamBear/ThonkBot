@@ -1,7 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { state } = require('../bot');
-const fs = require('fs');
-const path = require('path');
 const {
 	AudioPlayerStatus,
 	entersState,
