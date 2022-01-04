@@ -29,14 +29,13 @@ for (const file of commandFiles) {
                 }
                 return Promise.all(promises);
             }).then(() => console.log('Old commands deleted.'))
-            .catch(() => console.error);
+                .catch(() => console.error);
+
+            console.log('Setting up new commands.');
+            rest.put(Routes.applicationCommands(process.env.DISCORD_CLEINT_ID), { body: commands })
+                .then(() => console.log('Successfully registered application commands.'))
+                .catch(console.error);
         }
-
-        console.log('Setting up new commands.');
-        rest.put(Routes.applicationCommands(process.env.DISCORD_CLEINT_ID), { body: commands })
-            .then(() => console.log('Successfully registered application commands.'))
-            .catch(console.error);
-
         console.log('Successfully reloaded application (/) commands.');
     } catch (e) {
         console.log(e);
