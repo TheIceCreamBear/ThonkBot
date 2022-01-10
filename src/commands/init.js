@@ -1,2 +1,2 @@
-require('./loader');
-require('./handler');
+import('./loader.js');
+import('./handler.js');

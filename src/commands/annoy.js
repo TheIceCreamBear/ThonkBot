@@ -1,6 +1,6 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { state } = require('../bot');
-const {
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { state } from '../bot.js';
+import {
 	AudioPlayerStatus,
 	entersState,
 	joinVoiceChannel,
@@ -9,15 +9,18 @@ const {
     createAudioResource,
     StreamType,
     VoiceConnectionDisconnectReason,
-} = require('@discordjs/voice');
+} from '@discordjs/voice';
+import { readFileSync } from 'fs';
+import { promisify } from 'util';
 
-const { baseurl, files, params } = require('../audio/audio.json');
-const wait = require('util').promisify(setTimeout);
+// why is it so ~~hard~~ complex to import a json file into ES modeuls???
+const { baseurl, files, params } = JSON.parse(readFileSync(new URL('../audio/audio.json', import.meta.url)));
+const wait = promisify(setTimeout);
 
 const minTime = parseInt(process.env.MIN_TIME || '150');
 const minAllowedMax = parseInt(process.env.MIN_ALLOWED_MAX || '300');
 
-let annoyState = {idle: idle};
+let annoyState = { idle: idle };
 state.annoyState = annoyState;
 
 function idle() {
@@ -255,7 +258,7 @@ function getRandomInt(max, min) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('annoy')
         .setDescription('You probably cannot run this command.')

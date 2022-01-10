@@ -1,4 +1,4 @@
-const { state } = require('../bot');
+import { state } from '../bot.js';
 
 state.client.on('interactionCreate', async interaction => {
     if (!interaction.isCommand()) return;

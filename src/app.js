@@ -1,12 +1,13 @@
 // the new main file for the bot
-require('dotenv').config();
-const { client } = require('./stateful/dbhandler');
+import { config } from 'dotenv';
+import { initDb } from './stateful/dbhandler.js';
+import { state, init, save } from './bot.js';
 
-const { state, init, save } = require('./bot');
+config();
 
 // main function to run the bot
 async function run() {
-    await client.connect();
+    await initDb();
     while (true) {
         const interval = setInterval(() => {
             save();

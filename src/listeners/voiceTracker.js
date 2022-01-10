@@ -1,4 +1,4 @@
-const { state } = require('../bot');
+import { state } from '../bot.js';
 
 state.voiceChannels = {};
 
@@ -23,7 +23,7 @@ state.client.on('voiceStateUpdate', async (oldState, newState) => {
         }
         state.voiceChannels[oldState.channelId].size -= 1;
 
-        if (state.voiceChannels[oldState.channelId].size == 1 && state.annoyState.channel.id == oldState.channelId) {
+        if (state.voiceChannels[oldState.channelId].size == 1 && state.annoyState.channel?.id == oldState.channelId) {
             console.log('Disconnecting and idleing, we are the only ones left in the channel');
             state.annoyState.idle();
         }

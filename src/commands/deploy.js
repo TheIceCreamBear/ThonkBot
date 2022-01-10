@@ -1,8 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
-require('dotenv').config();
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v9';
+import('dotenv').config();
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 console.log(__dirname);
 
@@ -11,7 +14,7 @@ const commandFiles = fs.readdirSync(__dirname).filter(file => file.endsWith('.js
 const commands = [];
 
 for (const file of commandFiles) {
-    const command = require(path.join(__dirname, file));
+    const command = import(path.join(__dirname, file)).default;
     commands.push(command.data.toJSON());
 }
 

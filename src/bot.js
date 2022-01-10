@@ -1,10 +1,12 @@
-const { Client, Intents } = require('discord.js');
-const { loadState, saveState } = require('./stateful/dbhandler');
+import { Client, Intents } from 'discord.js';
+import { loadState, saveState } from './stateful/dbhandler.js';
 
-let state = {};
-// let state = loadState();
+const state = {};
 
 async function init() {
+    // init state with DB, then overwrite with env
+    setState(await loadState());
+
     state.clientID = process.env.DISCORD_CLIENT_ID;
     state.focusedGuild = process.env.DISCORD_GUILD_ID;
 
@@ -19,11 +21,15 @@ async function init() {
     });
     
     // init commands
-    require('./commands/init');
+    import('./commands/init.js');
     // init listeners
-    require('./listeners/loader');
+    import('./listeners/loader.js');
 
     await state.client.login();
+}
+
+function setState(newState) {
+    Object.assign(state, newState);
 }
 
 async function save() {
@@ -52,6 +58,4 @@ function getAlphaRoleArray() {
     return roles;
 }
 
-module.exports.state = state;
-module.exports.init = init;
-module.exports.save = save;
+export { state, init, save };
