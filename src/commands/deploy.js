@@ -3,7 +3,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
-import('dotenv').config();
+import { config } from 'dotenv';
+
+config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
