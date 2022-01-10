@@ -1,22 +1,22 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { config } from 'dotenv';
 
 config();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+console.log('Reading commands for deployment');
 
-console.log(__dirname);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
 const commandFiles = fs.readdirSync(__dirname).filter(file => file.endsWith('.js') && !file.includes('loader.js') && !file.includes('handler.js') && !file.includes('init.js') && !file.includes('deploy.js'));
 const commands = [];
 
 for (const file of commandFiles) {
-    const command = import(path.join(__dirname, file)).default;
+    const command = (await import(pathToFileURL(path.join(__dirname, file)))).default;
     commands.push(command.data.toJSON());
 }
 
