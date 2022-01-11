@@ -1,0 +1,10 @@
+{
+    "baseurl": "https://github.com/TheIceCreamBear/AudioStore/blob/main/",
+    "files": [
+        "tacoBell.ogg",
+        "homerDepot.ogg",
+        "scottLandForever.ogg",
+        "oneWidePutin.ogg"
+    ],
+    "params": "?raw=true"
+}

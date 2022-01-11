@@ -24,7 +24,7 @@ function saveState(state) {
     if (!init) {
         throw new Error('Init me first bozo');
     }
-    state.STERM = state.STERM || STERM;
+    state.STERM = state?.STERM || STERM;
     dbInfo.col.findOneAndReplace({ STERM: state.STERM }, state, err => {
         dbInfo.col.insertOne(state, err => {
             console.error(err);
