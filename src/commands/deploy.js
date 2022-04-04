@@ -26,10 +26,10 @@ for (const file of commandFiles) {
 
         if (process.env.RESET_COMMANDS) {
             console.log('Deleting old commands.');
-            rest.get(Routes.applicationCommands(process.env.DISCORD_CLEINT_ID)).then(data => {
+            rest.get(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID)).then(data => {
                 const promises = [];
                 for (const command of data) {
-                    const deleteUrl = `${Routes.applicationCommands(process.env.DISCORD_CLEINT_ID)}/${command.id}`;
+                    const deleteUrl = `${Routes.applicationCommands(process.env.DISCORD_CLIENT_ID)}/${command.id}`;
                     promises.push(rest.delete(deleteUrl));
                 }
                 return Promise.all(promises);
@@ -37,7 +37,7 @@ for (const file of commandFiles) {
                 .catch(() => console.error);
 
             console.log('Setting up new commands.');
-            rest.put(Routes.applicationCommands(process.env.DISCORD_CLEINT_ID), { body: commands })
+            rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID), { body: commands })
                 .then(() => console.log('Successfully registered application commands.'))
                 .catch(console.error);
         }
