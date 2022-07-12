@@ -7,7 +7,7 @@ config();
 
 // main function to run the bot
 async function run() {
-    await initDb();
+    // await initDb();
     while (true) {
         const interval = setInterval(() => {
             save();

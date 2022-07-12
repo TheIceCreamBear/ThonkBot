@@ -5,7 +5,7 @@ const state = {};
 
 async function init() {
     // init state with DB, then overwrite with env
-    setState(await loadState());
+    // setState(await loadState());
 
     state.clientID = process.env.DISCORD_CLIENT_ID;
     state.focusedGuild = process.env.DISCORD_GUILD_ID;
@@ -33,7 +33,7 @@ function setState(newState) {
 }
 
 async function save() {
-    saveState();
+    // saveState();
 }
 
 function getAlphaUserArray() {
