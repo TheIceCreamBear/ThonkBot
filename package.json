@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "node ./src/commands/deploy.js",
+    "deploy": "node ./src/commands/deploy.js",
     "start": "node .",
     "format": "prettier --write ."
   },
