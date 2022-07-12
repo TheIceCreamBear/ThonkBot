@@ -1,5 +1,5 @@
 import { Client, Intents } from 'discord.js';
-import { loadState, saveState } from './stateful/dbhandler.js';
+// import { loadState, saveState } from './stateful/dbhandler.js';
 
 const state = {};
 
