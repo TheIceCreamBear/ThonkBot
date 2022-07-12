@@ -17,9 +17,9 @@ async function run() {
             await init();
             // TODO more stuff here
             console.log('Initialization completed');
-            
+
             while (true) {
-                const waiting = new Promise((resolve) => setTimeout(resolve, 1_000_000_000));
+                const waiting = new Promise(resolve => setTimeout(resolve, 1_000_000_000));
                 await waiting;
             }
         } catch (e) {

@@ -63,7 +63,7 @@ state.client.once('ready', async () => {
     }
     let channels;
     try {
-        channels = await guild.channels.fetch()
+        channels = await guild.channels.fetch();
     } catch (e) {
         console.log('Some error happened with fetching the guild channels');
         console.log(e);

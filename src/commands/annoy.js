@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { state } from '../bot.js';
 import {
-	AudioPlayerStatus,
-	entersState,
-	joinVoiceChannel,
-	VoiceConnectionStatus,
+    AudioPlayerStatus,
+    entersState,
+    joinVoiceChannel,
+    VoiceConnectionStatus,
     createAudioPlayer,
     createAudioResource,
     StreamType,
@@ -79,14 +79,16 @@ async function annoy() {
         await entersState(annoyState.connection, VoiceConnectionStatus.Ready, 20e3);
     } catch (e) {
         console.warn(e);
-        annoyState.notifChannel.send(`Failed to join the voice channel ${channel.id} in 20s. <@${annoyState.notifUser.id}>`).catch(console.warn);
+        annoyState.notifChannel
+            .send(`Failed to join the voice channel ${channel.id} in 20s. <@${annoyState.notifUser.id}>`)
+            .catch(console.warn);
         return;
     }
 
     const file = files[getRandomInt(files.length, 0)];
 
     const resource = createAudioResource(baseurl + file + params, {
-        inputType: StreamType.Arbitrary
+        inputType: StreamType.Arbitrary,
     });
 
     console.log(`Annoy time: ${file}.\tAnnoys left: ${annoyState.maxAnnoy}`);
@@ -107,10 +109,13 @@ function joinChannelOrNothing(channel) {
         guildId: annoyState.guild.id,
         adapterCreator: annoyState.guild.voiceAdapterCreator,
         selfDeaf: false,
-        selfMute: false
+        selfMute: false,
     });
     annoyState.connection.on('error', console.warn);
-    annoyState.connection.on('error', () => {annoyState.connection = undefined; annoyState.channel = undefined});
+    annoyState.connection.on('error', () => {
+        annoyState.connection = undefined;
+        annoyState.channel = undefined;
+    });
     // borrowed from https://github.com/discordjs/voice/blob/main/examples/music-bot/src/music/subscription.ts#L32
     annoyState.connection.on('stateChange', async (_, newState) => {
         if (newState.status === VoiceConnectionStatus.Disconnected) {
@@ -127,15 +132,19 @@ function joinChannelOrNothing(channel) {
                 annoyState.connection.destroy();
             }
         } else if (newState.status === VoiceConnectionStatus.Destroyed) {
-        } else if (newState.status === VoiceConnectionStatus.Connecting || newState.status === VoiceConnectionStatus.Signalling) {
+        } else if (
+            newState.status === VoiceConnectionStatus.Connecting ||
+            newState.status === VoiceConnectionStatus.Signalling
+        ) {
             try {
                 await entersState(annoyState.connection, VoiceConnectionStatus.Ready, 20_000);
             } catch {
-                if (annoyState.connection.state.status !== VoiceConnectionStatus.Destroyed) annoyState.connection.destroy();
+                if (annoyState.connection.state.status !== VoiceConnectionStatus.Destroyed)
+                    annoyState.connection.destroy();
             }
         }
     });
-    
+
     annoyState.audioPlayer = createAudioPlayer();
     annoyState.audioPlayer.on('stateChange', (oldState, newState) => {
         if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle) {
@@ -148,7 +157,7 @@ function joinChannelOrNothing(channel) {
         }
     });
     annoyState.audioPlayer.on('error', console.warn);
-    
+
     annoyState.connection.subscribe(annoyState.audioPlayer);
 }
 
@@ -180,14 +189,14 @@ async function execute(interaction) {
     if (maxTime == 0) {
         if (!annoyState.handle) {
             interaction.reply('No annoy job running to cancel.');
-            annoyState = {idle: idle};
+            annoyState = { idle: idle };
             state.annoyState = annoyState;
             return;
         }
-        
+
         clearTimeout(annoyState.handle);
 
-        annoyState = {idle: idle};
+        annoyState = { idle: idle };
         state.annoyState = annoyState;
 
         interaction.reply('Stopping annoy job.');
@@ -200,7 +209,9 @@ async function execute(interaction) {
     }
 
     if (maxTime < minAllowedMax) {
-        interaction.reply(`The max timeout ${maxTime} is too low (and too annoying).\nMax timeout must be greater or equal to ${minAllowedMax}.`);
+        interaction.reply(
+            `The max timeout ${maxTime} is too low (and too annoying).\nMax timeout must be greater or equal to ${minAllowedMax}.`
+        );
         return;
     }
 
@@ -262,7 +273,17 @@ export default {
     data: new SlashCommandBuilder()
         .setName('annoy')
         .setDescription('You probably cannot run this command.')
-        .addIntegerOption(option => option.setName('maxtime').setDescription(`The max time between triggers in s. Min time is ${minTime} seconds. Use with 0 to disable.`))
-        .addIntegerOption(option => option.setName('maxannoyances').setDescription('The max number of annoyances until the command needs to be called again.')),
+        .addIntegerOption(option =>
+            option
+                .setName('maxtime')
+                .setDescription(
+                    `The max time between triggers in s. Min time is ${minTime} seconds. Use with 0 to disable.`
+                )
+        )
+        .addIntegerOption(option =>
+            option
+                .setName('maxannoyances')
+                .setDescription('The max number of annoyances until the command needs to be called again.')
+        ),
     execute,
 };

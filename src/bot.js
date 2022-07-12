@@ -13,13 +13,15 @@ async function init() {
     // setup alpha users and alpha roles
     state.alphaUsers = getAlphaUserArray();
     state.alphaRoles = getAlphaRoleArray();
-    
-    state.client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS]});
-    
+
+    state.client = new Client({
+        intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS],
+    });
+
     state.client.once('ready', () => {
         console.log('Ready!');
     });
-    
+
     // init commands
     import('./commands/init.js');
     // init listeners
