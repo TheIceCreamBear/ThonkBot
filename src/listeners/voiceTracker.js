@@ -1,9 +1,11 @@
+import { ChannelType } from 'discord.js';
 import { state } from '../bot.js';
 
 state.voiceChannels = {};
 
 state.client.on('voiceStateUpdate', async (oldState, newState) => {
     // console.log(JSON.stringify(oldState), JSON.stringify(newState));
+    console.log(newState);
     if (oldState.guild.id != newState.guild.id) {
         console.log('Old state guild doesnt match new state guild');
         return;
@@ -71,7 +73,7 @@ state.client.once('ready', async () => {
     }
 
     for (const [snowflake, channel] of channels) {
-        if (!channel.isVoice()) {
+        if (!channel.type == ChannelType.GuildVoice) {
             continue;
         }
         state.voiceChannels[snowflake] = {};
