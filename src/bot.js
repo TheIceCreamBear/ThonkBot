@@ -1,12 +1,8 @@
-import { Client, Intents } from 'discord.js';
-// import { loadState, saveState } from './stateful/dbhandler.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 
 const state = {};
 
 async function init() {
-    // init state with DB, then overwrite with env
-    // setState(await loadState());
-
     state.clientID = process.env.DISCORD_CLIENT_ID;
     state.focusedGuild = process.env.DISCORD_GUILD_ID;
 
@@ -15,7 +11,7 @@ async function init() {
     state.alphaRoles = getAlphaRoleArray();
 
     state.client = new Client({
-        intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS],
+        intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMembers],
     });
 
     state.client.once('ready', () => {
@@ -28,14 +24,6 @@ async function init() {
     import('./listeners/loader.js');
 
     await state.client.login();
-}
-
-function setState(newState) {
-    Object.assign(state, newState);
-}
-
-async function save() {
-    // saveState();
 }
 
 function getAlphaUserArray() {
@@ -60,4 +48,4 @@ function getAlphaRoleArray() {
     return roles;
 }
 
-export { state, init, save };
+export { state, init };

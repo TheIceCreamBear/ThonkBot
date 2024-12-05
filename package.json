@@ -21,19 +21,11 @@
   },
   "homepage": "https://github.com/TheIceCreamBear/ThonkBot#readme",
   "dependencies": {
-    "@discordjs/builders": "^0.6.0",
-    "@discordjs/opus": "^0.5.3",
-    "@discordjs/rest": "^0.1.0-canary.0",
-    "@discordjs/voice": "^0.6.0",
-    "discord-api-types": "^0.23.1",
-    "discord.js": "^13.2.0",
-    "dotenv": "^10.0.0",
-    "ffmpeg-static": "^4.4.0",
-    "mongodb": "^4.2.2",
-    "tweetnacl": "^1.0.3"
+    "discord.js": "14.16.3",
+    "dotenv": "16.4.7"
   },
   "engines": {
-    "node": "16.x"
+    "node": "22.x"
   },
   "devDependencies": {
     "prettier": "^2.7.1"
