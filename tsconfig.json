@@ -1,0 +1,19 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        // Sorry older environments, but this can only be in node 22 and up
+        "noImplicitAny": true,
+        "outDir": "./lib",
+        "declaration": false,
+        "module": "ES2022",
+        "moduleResolution": "node",
+        "target": "es2023",
+        "lib": ["ES2023"],
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "types": []
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules"],
+}
