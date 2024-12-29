@@ -1,6 +1,7 @@
 // the new main file for the bot
 import { config } from 'dotenv';
 import { init } from './bot.js';
+import { deconstructAllListeners } from './listeners/listeners.js';
 
 config();
 
@@ -18,6 +19,8 @@ async function run() {
                 await waiting;
             }
         } catch (e) {
+            // have to do this somewhere
+            deconstructAllListeners();
             console.log(e);
         }
     }

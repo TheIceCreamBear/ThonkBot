@@ -1,7 +1,7 @@
 import { Client, GatewayIntentBits, Snowflake, VoiceChannel } from 'discord.js';
-import { listenerInit } from './listeners/loader.js';
 import { CommandDefinition, loadCommandDefinitions, registerCommandListener } from './commands/commands.js';
 import { deployCommandsToGuild } from './commands/deploy.js';
+import { createAndInitAllListeners, Listener } from './listeners/listeners.js';
 
 export class BotState {
     clientId: string;
@@ -15,6 +15,7 @@ export class BotState {
     readonly voiceChannels: Map<string, VcData> = new Map();
     readonly userVcStates: Map<Snowflake, UserVcState> = new Map();
     readonly commands: Map<string, CommandDefinition> = new Map();
+    readonly listeners: Set<Listener> = new Set();
 }
 
 export class VcData {
@@ -60,7 +61,7 @@ async function init() {
     loadCommandDefinitions();
     registerCommandListener();
     // init listeners
-    listenerInit();
+    createAndInitAllListeners();
 
     await state.client.login();
 }

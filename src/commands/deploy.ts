@@ -12,7 +12,7 @@ export async function deployCommandsToGuild() {
     const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
     try {
-        console.log('Starting refersh of application (/) commands.');
+        console.log('Starting refresh of application (/) commands.');
 
         if (process.env.DELETE_OLD) {
             console.log('Deleting old commands.');
