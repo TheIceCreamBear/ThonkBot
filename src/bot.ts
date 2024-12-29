@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, VoiceChannel } from 'discord.js';
+import { Client, GatewayIntentBits, Snowflake, VoiceChannel } from 'discord.js';
 import { listenerInit } from './listeners/loader.js';
 import { CommandDefinition, loadCommandDefinitions, registerCommandListener } from './commands/commands.js';
 import { deployCommandsToGuild } from './commands/deploy.js';
@@ -11,14 +11,28 @@ export class BotState {
     adminRoles: string[];
 
     client: Client;
-    readonly voiceChannels: Map<string, VcData> = new Map();
 
+    readonly voiceChannels: Map<string, VcData> = new Map();
+    readonly userVcStates: Map<Snowflake, UserVcState> = new Map();
     readonly commands: Map<string, CommandDefinition> = new Map();
 }
 
 export class VcData {
     chan: VoiceChannel;
     size: number;
+}
+
+export class UserVcState {
+    userId: Snowflake;
+    channelId: Snowflake;
+
+    userMuted: boolean;
+    userDeafened: boolean;
+    streaming: boolean;
+    cameraOn: boolean;
+
+    serverMuted: boolean;
+    serverDeafened: boolean;
 }
 
 const state = new BotState();
