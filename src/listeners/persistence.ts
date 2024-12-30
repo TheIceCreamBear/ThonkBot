@@ -30,4 +30,6 @@ export class PersistenceListener {
     private persistLonger() {
         // TODO:
     }
+
+    // TODO: somehow i also need to write out the server name changes and voice channel name changes so that i can keep those (stupid justin)
 }
