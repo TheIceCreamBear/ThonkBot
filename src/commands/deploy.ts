@@ -17,7 +17,9 @@ export async function deployCommandsToGuild() {
         if (process.env.DELETE_OLD) {
             console.log('Deleting old commands.');
 
-            const existing = await rest.get(Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID, process.env.DISCORD_GUILD_ID)) as APIApplicationCommand[];
+            const existing = (await rest.get(
+                Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID, process.env.DISCORD_GUILD_ID),
+            )) as APIApplicationCommand[];
             for (const cmd of existing) {
                 // because discord.js used some fucked up types in their API, do this.
                 const deleteUrl = `${Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID, process.env.DISCORD_GUILD_ID)}/${cmd.id}` as RouteLike;
@@ -27,7 +29,7 @@ export async function deployCommandsToGuild() {
         }
 
         console.log('Setting up new commands.');
-        await rest.put(Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID, process.env.DISCORD_GUILD_ID), { body: commands })
+        await rest.put(Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID, process.env.DISCORD_GUILD_ID), { body: commands });
         console.log('Successfully reloaded application (/) commands.');
     } catch (e) {
         console.log(e);

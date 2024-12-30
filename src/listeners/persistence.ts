@@ -1,4 +1,4 @@
-import { state } from "../bot";
+import { state } from '../bot';
 
 // TODO: the main todo in here is that i need to decide what DB im using
 export class PersistenceListener {

@@ -7,7 +7,7 @@ export default class VoiceTrackingListener {
         state.client.on('voiceStateUpdate', this.handleVcUpdate);
         state.client.once('ready', this.initializeState);
     }
-    
+
     deconstruct() {
         state.client.removeListener('voiceStateUpdate', this.handleVcUpdate);
     }
@@ -37,24 +37,24 @@ export default class VoiceTrackingListener {
             console.log('Guild %s is not the focused guild.', oldState.guild.id);
             return;
         }
-    
+
         const userSnowflake = newState.id;
-    
+
         // if in the same channel, just update the state, dont worry about anything else
         if (oldState.channelId == newState.channelId) {
             const user = state.userVcStates.get(userSnowflake);
             if (!user) {
                 console.log('We were not tracking state for %s correctly, data may be lost...', userSnowflake);
                 this.addNewUserVcState(newState);
-    
+
                 return;
             }
-    
+
             this.updateUserVcState(user, newState);
-    
+
             return;
         }
-    
+
         // they were in a channel previously, but it doesnt match our new channel (possibly none, meaning leave)
         if (oldState.channelId) {
             // treat this as a disconnect
@@ -66,7 +66,7 @@ export default class VoiceTrackingListener {
                 state.userVcStates.delete(userSnowflake);
             }
         }
-    
+
         // they are now in a channel, and it doesnt match an existing channel (possibly none, meaning join)
         if (newState.channelId) {
             // treat this as a connect
@@ -87,7 +87,7 @@ export default class VoiceTrackingListener {
         // https://discord.com/channels/81384788765712384/381889950666457088/896320105854672916
         guild.shardId = 0;
         // the above is a hack and should not be used if sharding
-        
+
         try {
             let members = await guild.members.fetch({ cache: false, user: undefined });
         } catch (e) {
@@ -104,12 +104,12 @@ export default class VoiceTrackingListener {
             console.log(e);
             return;
         }
-    
+
         for (const [_, channel] of channels) {
             if (channel.type !== ChannelType.GuildVoice) {
                 continue;
             }
-            
+
             for (const [snowflake, member] of channel.members) {
                 // check for an existing state (there shouldnt be one, but what ever)
                 const existing = state.userVcStates.get(snowflake);

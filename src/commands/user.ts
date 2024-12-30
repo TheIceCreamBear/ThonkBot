@@ -6,10 +6,10 @@ export default () => {
     userCommand.command = new SlashCommandBuilder()
         .setName('user')
         .setDescription('Replies with user info!');
-    
-    userCommand.execute = async (interaction) => {
-        interaction.reply(`Your tag: ${interaction.user.tag}`)
-    }
+
+    userCommand.execute = async interaction => {
+        interaction.reply(`Your tag: ${interaction.user.tag}`);
+    };
 
     return userCommand;
-}
+};

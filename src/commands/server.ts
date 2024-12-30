@@ -6,10 +6,10 @@ export default () => {
     serverCommand.command = new SlashCommandBuilder()
         .setName('server')
         .setDescription('Replies with server info!');
-    
-    serverCommand.execute = async (interaction) => {
+
+    serverCommand.execute = async interaction => {
         interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
-    }
-    
+    };
+
     return serverCommand;
-}
+};

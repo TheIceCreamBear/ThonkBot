@@ -1,8 +1,8 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { state } from '../bot.js';
-import userCommand from "./user.js";
-import pingCommand from "./ping.js";
-import serverCommand from "./server.js";
+import userCommand from './user.js';
+import pingCommand from './ping.js';
+import serverCommand from './server.js';
 
 export class CommandDefinition {
     execute: (interaction: CommandInteraction) => Promise<void>;
@@ -10,7 +10,7 @@ export class CommandDefinition {
 }
 
 export function getAllCommandDefinitions(): CommandDefinition[] {
-    return [ userCommand(), pingCommand(), serverCommand() ];
+    return [userCommand(), pingCommand(), serverCommand()];
 }
 
 export function loadCommandDefinitions() {
@@ -24,11 +24,11 @@ export function loadCommandDefinitions() {
 export function registerCommandListener() {
     state.client.on('interactionCreate', async interaction => {
         if (!interaction.isCommand()) return;
-    
+
         const command = state.commands.get(interaction.commandName);
-    
+
         if (!command) return;
-    
+
         try {
             await command.execute(interaction);
         } catch (error) {
