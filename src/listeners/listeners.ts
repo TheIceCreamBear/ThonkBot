@@ -1,4 +1,5 @@
 import { state } from "../bot";
+import { PersistenceListener } from "./persistence";
 import VoiceTrackingListener from "./voiceTracker";
 
 export interface Listener {
@@ -10,7 +11,8 @@ export function createAndInitAllListeners() {
     var voiceTracking = new VoiceTrackingListener();
     state.listeners.add(voiceTracking);
 
-    // load other listeners here
+    var persistence = new PersistenceListener();
+    state.listeners.add(persistence);
 
     for (const listener of state.listeners) {
         listener.init();

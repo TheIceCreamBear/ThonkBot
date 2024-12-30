@@ -12,7 +12,6 @@ export class BotState {
 
     client: Client;
 
-    readonly voiceChannels: Map<string, VcData> = new Map();
     readonly userVcStates: Map<Snowflake, UserVcState> = new Map();
     readonly commands: Map<string, CommandDefinition> = new Map();
     readonly listeners: Set<Listener> = new Set();
