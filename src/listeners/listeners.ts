@@ -1,6 +1,6 @@
-import { state } from '../bot';
-import { PersistenceListener } from './persistence';
-import VoiceTrackingListener from './voiceTracker';
+import { state } from '../bot.js';
+import { PersistenceListener } from './persistence.js';
+import VoiceTrackingListener from './voiceTracker.js';
 
 export interface Listener {
     init(): void;

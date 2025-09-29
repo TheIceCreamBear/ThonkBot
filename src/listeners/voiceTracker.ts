@@ -2,14 +2,17 @@ import { ChannelType, VoiceState } from 'discord.js';
 import { state, UserVcState, VcData } from '../bot.js';
 
 export default class VoiceTrackingListener {
+    private vsuListener: (oldState: VoiceState, newState: VoiceState) => void;
+
     init() {
         // TODO: this works right? this doesnt break any `this` references right?
-        state.client.on('voiceStateUpdate', this.handleVcUpdate);
-        state.client.once('ready', this.initializeState);
+        this.vsuListener = (old, neo) => this.handleVcUpdate(old, neo);
+        state.client.on('voiceStateUpdate', this.vsuListener);
+        state.client.once('ready', () => this.initializeState());
     }
 
     deconstruct() {
-        state.client.removeListener('voiceStateUpdate', this.handleVcUpdate);
+        state.client.removeListener('voiceStateUpdate', this.vsuListener);
     }
 
     private updateUserVcState(user: UserVcState, newState: VoiceState) {
